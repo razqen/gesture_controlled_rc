@@ -15,7 +15,7 @@ uint16_t packetSize;
 uint16_t fifoCount;
 uint8_t fifoBuffer[64];
 
-Quaternion q;
+Quaternion q;                                                                                       //starting and initialising everything
 VectorFloat gravity;
 float ypr[3];   
 
@@ -27,37 +27,37 @@ void setup() {
   Wire.begin();
 
   mpu.initialize();
-  devStatus = mpu.dmpInitialize();
+  devStatus = mpu.dmpInitialize();                                                                   //
 
-  mpu.setXGyroOffset(220);     //change these values after tuning to our mpu6050 accordingly
-  mpu.setYGyroOffset(76);      //change these values after tuning to our mpu6050 accordingly
+  mpu.setXGyroOffset(220);     //change these values after tuning to our mpu6050 accordingly          //Configuring offsets that will cause issue in reading your hand movements by the dmp
+  mpu.setYGyroOffset(76);      //change these values after tuning to our mpu6050 accordingly             
   mpu.setZGyroOffset(-85);     //change these values after tuning to our mpu6050 accordingly
-  mpu.setZAccelOffset(1788);    //change these values after tuning to our mpu6050 accordingly
+  mpu.setZAccelOffset(1788);    //change these values after tuning to our mpu6050 accordingly         //
 
-  if (devStatus == 0) {
+  if (devStatus == 0) {                                                                               //Checking if dmp is configured and ready to use
     mpu.setDMPEnabled(true);
     packetSize = mpu.dmpGetFIFOPacketSize();
-    dmpReady = true;
+    dmpReady = true;                                                                                  
   } else {
     Serial.println("DMP Init Failed");
     while (1);
-  }
+  }                                                                                                   //
 
-  WiFi.mode(WIFI_STA);
+  WiFi.mode(WIFI_STA);                                                                                //
   esp_now_init();
 
-  esp_now_peer_info_t peerInfo = {};
-  memcpy(peerInfo.peer_addr, receiverMAC, 6);
-  peerInfo.channel = 0;
-  peerInfo.encrypt = false;
-  esp_now_add_peer(&peerInfo);
+  esp_now_peer_info_t peerInfo = {};                                                                  //here we initialise the whereabouts of the car i.e what we want to communicate with
+  memcpy(peerInfo.peer_addr, receiverMAC, 6);                                                         //this is the who
+  peerInfo.channel = 0;                                                                               //where
+  peerInfo.encrypt = false;                                                                           //how
+  esp_now_add_peer(&peerInfo);                                                                        //
 }
 
 void loop() {
   if (!dmpReady) return;
 
-  fifoCount = mpu.getFIFOCount();
-  if (fifoCount < packetSize) return;
+  fifoCount = mpu.getFIFOCount();                                                                       
+  if (fifoCount < packetSize) return;                                                                  //if fifo does not contain a packet then exit the loop
 
   mpu.getFIFOBytes(fifoBuffer, packetSize);
 
