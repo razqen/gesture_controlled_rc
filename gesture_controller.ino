@@ -14,9 +14,6 @@ ControlPacket data;
 
 uint8_t receiverMAC[] = {};  //need to fill this
 
-char currentState = 'S';
-char lastState = 'S';
-
 void setup() {
   Serial.begin(115200);
   Wire.begin();
