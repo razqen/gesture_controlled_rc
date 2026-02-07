@@ -5,6 +5,13 @@
 
 MPU6050 mpu6050(Wire);
 
+typedef struct {
+  char cmd;      
+  float angle;   
+} ControlPacket;
+
+ControlPacket data;
+
 uint8_t receiverMAC[] = {};  //need to fill this
 
 char currentState = 'S';
@@ -35,17 +42,39 @@ void setup() {
 void loop() {
   mpu6050.update();
 
-  if (mpu6050.getAngleY() > 20) currentState = 'F';
-  else if (mpu6050.getAngleY() < -20) currentState = 'B';
-  else if (mpu6050.getAngleX() > 20) currentState = 'R';
-  else if (mpu6050.getAngleX() < -20) currentState = 'L';
-  else currentState = 'S';
+  float angleX = mpu6050.getAngleX();
+  float angleY = mpu6050.getAngleY();
 
-  if (currentState != lastState) {
-    esp_now_send(receiverMAC, (uint8_t*)&currentState, sizeof(currentState));
-    Serial.println(currentState);
-    lastState = currentState;
+  data.cmd = 'S';
+  data.angle = 0;
+
+ 
+  if (angleY > 5) {
+    data.cmd = 'F';
+    data.angle = angleY;
   }
+  else if (angleY < -5) {
+    data.cmd = 'B';
+    data.angle = -angleY;
+  }
+
+  else if (angleX > 5) {
+    data.cmd = 'R';
+    data.angle = angleX;
+  }
+  else if (angleX < -5) {
+    data.cmd = 'L';
+    data.angle = -angleX;
+  }
+
+  data.angle = constrain(data.angle, 0, 25);
+
+  esp_now_send(receiverMAC, (uint8_t*)&data, sizeof(data));
+
+  Serial.print("Cmd: ");
+  Serial.print(data.cmd);
+  Serial.print("  Angle: ");
+  Serial.println(data.angle);
 
   delay(20);
 }
