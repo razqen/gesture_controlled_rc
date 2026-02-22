@@ -3,16 +3,14 @@
 
 #define ENA 25
 #define IN1 26
-#define IN2 27
+#define IN2 18
 #define ENB 14
-#define IN3 12
+#define IN3 32
 #define IN4 13
-#define MIN_ANGLE 5.0
-#define MAX_ANGLE 25.0
-#define MIN_SPEED 80     
-#define MAX_SPEED 255
-
-char command = 'S';
+#define MIN_ANGLE 10.0
+#define MAX_ANGLE 35.0
+#define MIN_SPEED 550     
+#define MAX_SPEED 1023
 
 typedef struct {
   char cmd;     
