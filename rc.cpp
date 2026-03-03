@@ -90,7 +90,7 @@ void forward(int spd) {
   digitalWrite(IN4, HIGH);
 }
 
-void left(int spd) {
+void right(int spd) {
   analogWrite(ENA, spd / 3);
   analogWrite(ENB, spd);
   digitalWrite(IN1, HIGH);
@@ -99,7 +99,7 @@ void left(int spd) {
   digitalWrite(IN4, HIGH);
 }
 
-void right(int spd) {
+void left(int spd) {
   analogWrite(ENA, spd);
   analogWrite(ENB, spd / 3);
   digitalWrite(IN1, LOW);   
